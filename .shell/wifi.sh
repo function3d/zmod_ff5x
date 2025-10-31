@@ -30,7 +30,7 @@ wifi_fix()
         return 0
     fi
 
-    if grep -q '"wifiStationStatus" *: *true' "$FFCONFIG"; then
+    if grep -q '"wifiStationStatus" : true' "$FFCONFIG"; then
         echo "WiFi station enabled on original screen — skipping network restart."
         return 0
     fi

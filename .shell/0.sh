@@ -19,7 +19,7 @@ CURL="/usr/prog/curl-7.55.1-https/bin/curl"
 PROGRAM_DIR="/usr/prog/PROGRAM/"
 GLINES=50000
 UPDATE_DIR="/usr/data/update/"
-FFCONFIG='/usr/data/config/Adventurer5M.json'
+FFCONFIG='/usr/prog/config/Adventurer5M.json'
 WPA_CONFIG="/usr/prog/wifi/wpa_supplicant.conf"
 ZLANG="en"
 if grep -q "language: en" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="en";
@@ -31,4 +31,5 @@ else if grep -q "language: es" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="es";
 else if grep -q "language: zh" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="zh";
 else if grep -q "language: ja" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="ja";
 else if grep -q "language: ko" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="ko";
-fi; fi; fi; fi; fi; fi; fi; fi; fi
+else if grep -q "language: pt" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="pt";
+fi; fi; fi; fi; fi; fi; fi; fi; fi; fi

@@ -243,6 +243,7 @@ fix_config()
     check_link ${MOD_CONF}/mod/base.cfg ${ZLANG}/base.cfg
     check_link ${MOD_CONF}/mod/client.cfg ${ZLANG}/client.cfg
     check_link ${MOD_CONF}/mod/klipper13_base.cfg ${ZLANG}/klipper13_base.cfg
+    check_link ${MOD_CONF}/.theme mod/.shell/.theme
     if [ ${FF5X} -eq 0 ]; then
         check_link ${MOD_CONF}/mod/klipper13.cfg ${ZLANG}/klipper13_ff5m.cfg
         check_link ${MOD_CONF}/mod/klipper11.cfg ${ZLANG}/klipper11.cfg
@@ -377,7 +378,7 @@ unset LD_PRELOAD
         grep -q "Zcontrol 1.18" ${KLIPPER_DIR}/klippy/extras/spi_temperature.py || cp ${MOD_CONF}/mod/.shell/spi_temperature.py ${KLIPPER_DIR}/klippy/extras/spi_temperature.py
         grep -q "zmod 1.0" /opt/klipper/start.sh || cp ${MOD_CONF}/mod/.shell/start.sh /opt/klipper/start.sh
     else
-        grep -q "zmod 1.4" ${KLIPPER_DIR}/klippy/extras/virtual_sdcard.py || cp ${MOD_CONF}/mod/.shell/virtual_sdcard.py ${KLIPPER_DIR}/klippy/extras/virtual_sdcard.py
+        grep -q "zmod 1.5" ${KLIPPER_DIR}/klippy/extras/virtual_sdcard.py || cp ${MOD_CONF}/mod/.shell/virtual_sdcard.py ${KLIPPER_DIR}/klippy/extras/virtual_sdcard.py
     fi
 
     check_link ${KLIPPER_DIR}/klippy/extras/zmod.py ${MOD_CONF}/mod/.shell/zmod.py

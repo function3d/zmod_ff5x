@@ -4,7 +4,7 @@ import requests
 import logging
 import subprocess
 
-FFCONFIG='/usr/data/config/Adventurer5M.json'
+FFCONFIG='/usr/prog/config/Adventurer5M.json'
 FILE_CONFIG='/usr/data/config/mod_data/file.json'
 COLOR_CONFIG = '/usr/data/config/mod_data/color.json'
 
@@ -341,6 +341,43 @@ TRANSLATIONS = {
         'unload_error': "언로드 오류: {}",
         'unload_success': "언로드 시작",
         'unload': "언로드"
+    },
+    'pt': {
+        'cancel': "Cancelar",
+        'change_color': "Alterar cor",
+        'change_spool': "Mudando para bobina {}: {}/{}",
+        'change_type': "Alterar tipo",
+        'config_error': "!! Erro ao alterar cor/tipo\n{}",
+        'config_success': "Configurações salvas",
+        'error_color_or_type': "Especifique HEX ou TIPO",
+        'error_leveling': "NIVELAMENTO inválido: {}. Válido: 0 ou 1",
+        'error_napr': "Direção inválida (0-1)",
+        'error_no_filename': "Parâmetro NOME_DO_ARQUIVO faltando",
+        'error_slot': "SLOT inválido. Válido: 1-4",
+        'error_tool': "T{} inválido: {}. Válido: 1-4",
+        'error_type': "Tipo de material inválido: {}. Válido: {}",
+        'file_tool': "No arquivo",
+        'load_error': "!! Erro de carregamento/descarga\n{}",
+        'load_success': "Carregamento iniciado",
+        'load': "Carregar",
+        'no_response': "!! Sem resposta da impressora. Configure via: \"Configurações\" -> \"WiFi\" -> \"Modo de Rede\" -> \"Apenas Local\"\n{}",
+        'printing_error': "!! Erro na impressão do arquivo\n{}",
+        'prompt_choose': "Selecione uma bobina para modificar",
+        'prompt_file': "Arquivo para imprimir: {}",
+        'prompt_leveling_off': "Imprimir sem nivelamento da mesa",
+        'prompt_leveling_on': "Imprimir com nivelamento da mesa",
+        'prompt_map_color': "Mapear cor do arquivo para bobina",
+        'prompt_material': "Material carregado",
+        'reset_colors': "Redefinir cores",
+        'select_action': "Selecionar ação",
+        'select_color': "Selecionar cor",
+        'select_type': "Selecionar tipo de material",
+        'send_print': "Iniciar impressão",
+        'spool_info': "Bobina {}: {}/{}",
+        'spool': "na bobina",
+        'unload_error': "Erro ao descarregar: {}",
+        'unload_success': "Descarga iniciada",
+        'unload': "Descarregar"
     }
 }
 
@@ -482,8 +519,11 @@ class zmod_color:
             config["FFMInfo"][f"ffmColor{zslot}"] = zcolor
             config["FFMInfo"][f"ffmType{zslot}"] = ztype
 
-            with open(FFCONFIG, 'w') as file:
-                return 200, json.dump(config, file, indent=2)
+            with open(FFCONFIG, 'w', encoding='utf-8') as file:
+                json_string = json.dumps(config, indent='\t')
+                formatted_json_string = re.sub(r'(":)', r'" : ', json_string)
+                file.write(formatted_json_string)
+                return 200, formatted_json_string
 
         return 500, "Error"
 
@@ -574,8 +614,10 @@ class zmod_color:
                 if not self.display:
                     self.zmod_ifs.set_cur_port(zslot)
 
-                with open(FFCONFIG, 'w') as file:
-                    json.dump(config, file, indent=2)
+                with open(FFCONFIG, 'w', encoding='utf-8') as file:
+                    json_string = json.dumps(config, indent='\t')
+                    formatted_json_string = re.sub(r'(":)', r'" : ', json_string)
+                    file.write(formatted_json_string)
                     gcmd.respond_raw(f"Extruder: {zslot}")
 
     def cmd_GET_ZCOLOR(self, gcmd):
@@ -609,13 +651,11 @@ class zmod_color:
                 gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_choose')}")
                 gcmd.respond_raw("// action:prompt_button_group_start")
             else:
-                gcmd.respond_raw(f"// {prompt_text}")
-                gcmd.respond_raw(f"// IFS: {self.ifs}")
-
+                gcmd.respond_raw(f"// {prompt_text} | IFS: {self.ifs}")
             for slot in result:
-                btn_text = f"{slot['ID']}: {slot['Material']}/{slot['Color']}"
+                btn_text = f"{slot['ID']}: {slot['Material']}"
                 if silent == 0:
-                    gcmd.respond_raw(f"// action:prompt_button {btn_text}|RUN_ZCOLOR SLOT={slot['ID']} HEX={slot['HEX']} TYPE={slot['Material']}|primary")
+                    gcmd.respond_raw(f"// action:prompt_button {btn_text}|RUN_ZCOLOR SLOT={slot['ID']} HEX={slot['HEX']} TYPE={slot['Material']}|primary|{slot['HEX']}")
                 else:
                     gcmd.respond_raw(f"// {btn_text}")
 
@@ -682,7 +722,7 @@ class zmod_color:
                         btn_text = (
                             f"T{tool_idx} -> "
                             f"{slot_info['ID']}: "
-                            f"{slot_info['Material']}/{slot_info['Color']}"
+                            f"{slot_info['Material']}"
                         )
                         params = (
                             f"LEVELING={leveling} FILENAME=\"{fname}\" "
@@ -691,7 +731,7 @@ class zmod_color:
                         )
                         gcmd.respond_raw(
                             f"// action:prompt_button {btn_text}|"
-                            f"CHANGE_T_ZCOLOR T={tool_idx} {params}|primary"
+                            f"CHANGE_T_ZCOLOR T={tool_idx} {params}|primary|{slot_info['HEX']}"
                         )
                 gcmd.respond_raw("// action:prompt_button_group_end")
 
@@ -826,6 +866,7 @@ class zmod_color:
     def cmd_CHANGE_FILAMENT(self, gcmd):
         channel = gcmd.get_int('CHANNEL', None)
         restore = gcmd.get_int('RESTORE', 1)
+
         if channel is None:
             raise gcmd.error("Error: CHANNEL parameter is required")
             return
@@ -919,11 +960,11 @@ class zmod_color:
             for slot in result:
                 btn_text = (
                     f"{slot['ID']}: "
-                    f"{slot['Material']}/{slot['Color']}"
+                    f"{slot['Material']}"
                 )
                 gcmd.respond_raw(
                     f"// action:prompt_button {btn_text}|"
-                    f"SET_ZCOLOR T{ztool}={slot['ID']} {params}|primary"
+                    f"SET_ZCOLOR T{ztool}={slot['ID']} {params}|primary|{slot['HEX']}"
                 )
 
             gcmd.respond_raw("// action:prompt_button_group_end")
@@ -955,7 +996,7 @@ class zmod_color:
         gcmd.respond_raw("// action:prompt_button_group_start")
         gcmd.respond_raw(
             f"// action:prompt_button {self._t('change_color')}|"
-            f"CHANGE_ZCOLOR SLOT={zslot} TYPE={ztype}|primary"
+            f"CHANGE_ZCOLOR SLOT={zslot} TYPE={ztype}|primary|{zhex}"
         )
         gcmd.respond_raw(
             f"// action:prompt_button {self._t('change_type')}|"
@@ -1030,12 +1071,18 @@ class zmod_color:
             gcmd.respond_raw(f"// action:prompt_begin {self._t('select_color')}")
             gcmd.respond_raw(f"// action:prompt_text {self._t('spool_info', zslot, ztype, '')}")
             gcmd.respond_raw("// action:prompt_button_group_start")
+            counter = 0
+            total_colors = len(self.COLOR_MAPPING)
             for hex_code, color_data in self.COLOR_MAPPING.items():
-                color_name = color_data[self.language]
+                #color_name = color_data[self.language]
                 gcmd.respond_raw(
-                    f"// action:prompt_button {color_name}|"
-                    f"CHANGE_ZCOLOR SLOT={zslot} TYPE={ztype} HEX={hex_code}|primary"
+                    f"// action:prompt_button _ |"
+                    f"CHANGE_ZCOLOR SLOT={zslot} TYPE={ztype} HEX={hex_code}|primary|{hex_code}"
                 )
+                counter += 1
+                if counter % 8 == 0 and counter < total_colors:
+                    gcmd.respond_raw("// action:prompt_button_group_end")
+                    gcmd.respond_raw("// action:prompt_button_group_start")
             gcmd.respond_raw("// action:prompt_button_group_end")
             gcmd.respond_raw(f"// action:prompt_footer_button {self._t('cancel')}|RESPOND TYPE=command MSG=action:prompt_end")
             gcmd.respond_raw("// action:prompt_show")
@@ -1045,11 +1092,17 @@ class zmod_color:
             gcmd.respond_raw(f"// action:prompt_begin {self._t('select_type')}")
             gcmd.respond_raw(f"// action:prompt_text {self._t('spool_info', zslot, '', color_name)}")
             gcmd.respond_raw("// action:prompt_button_group_start")
+            counter = 0
+            total_materials = len(self.valid_types) - 1  # Исключаем '?'
             for material in self.valid_types[:-1]:  # Исключаем '?'
                 gcmd.respond_raw(
                     f"// action:prompt_button {material}|"
-                    f"CHANGE_ZCOLOR SLOT={zslot} TYPE={material} HEX={zhex}|primary"
+                    f"CHANGE_ZCOLOR SLOT={zslot} TYPE={material} HEX={zhex}|primary|{zhex}"
                 )
+                counter += 1
+                if counter % 4 == 0 and counter < total_materials:
+                    gcmd.respond_raw("// action:prompt_button_group_end")
+                    gcmd.respond_raw("// action:prompt_button_group_start")
             gcmd.respond_raw("// action:prompt_button_group_end")
             gcmd.respond_raw(f"// action:prompt_footer_button {self._t('cancel')}|RESPOND TYPE=command MSG=action:prompt_end")
             gcmd.respond_raw("// action:prompt_show")

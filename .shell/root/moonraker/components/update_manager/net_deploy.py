@@ -161,8 +161,8 @@ class NetDeploy(AppDeploy):
     async def _detect_fallback(self) -> bool:
         # Only used by "web" app types to fallback on the previous version info
         fallback_defs = {
-            "mainsail": "mainsail-crew",
-            "fluidd": "fluidd-core"
+            "mainsail": "ghzserg",
+            "fluidd": "ghzserg"
         }
         for fname in ("manifest.json", "manifest.webmanifest"):
             manifest = self.path.joinpath(fname)

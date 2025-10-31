@@ -159,7 +159,8 @@ if [ ${FF5X} -eq 0 ]; then
 fi
 
 # Создаем каталоги под плагины
-grep '/root/printer_data/config/mod_data/plugins/' /opt/config/moonraker.conf /opt/config/mod_data/user.moonraker.conf | sed 's|.*/||' | while read a; do
+grep '/root/printer_data/config/mod_data/plugins/' /opt/config/moonraker.conf /opt/config/mod_data/user.moonraker.conf | sed 's|/$||' | sed 's|.*/||' | \
+while read a; do
     echo "Plugin $a"
     if ! [ -f "${MOD_CONF}/mod_data/plugins/$a/.git/config" ]; then
         url=$(get_origin_from_config ${MOD_CONF}/moonraker.conf "$a")
@@ -183,6 +184,16 @@ grep '/root/printer_data/config/mod_data/plugins/' /opt/config/moonraker.conf /o
         echo "Репозиторий $a уже  существует, пропускаю."
     fi
 done
+
+if grep -q mainsail-crew /root/mainsail/release_info.json; then
+    echo '{"project_name":"mainsail","project_owner":"ghzserg","version":"v1.0.0"}' >/root/mainsail/release_info.json
+    sqlite3 /opt/config/mod_data/database/moonraker-sql.db "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = 'mainsail';"
+fi
+
+if grep -q fluidd-core /root/fluidd/release_info.json; then
+    echo '{"project_name":"fluidd","project_owner":"ghzserg","version":"v1.0.0"}' >/root/fluidd/release_info.json
+    sqlite3 /opt/config/mod_data/database/moonraker-sql.db "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = 'fluidd';"
+fi
 
 /opt/config/mod/.shell/root/S65moonraker start
 /opt/config/mod/.shell/root/S70httpd start
