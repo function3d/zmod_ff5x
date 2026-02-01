@@ -1,11 +1,12 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 DATA=/usr/data
 DATA_GCODES=/usr/data/gcodes
 REMOUNT_MOD=${DATA}/lost+found
 UMOUNT_MOD=${DATA}/.mod
 MOD=${UMOUNT_MOD}/.zmod
-FF5X=1
+AD5X=1
 KEY_TYPE="ecdsa"
 KLIPPER_DIR="/usr/prog/klipper"
 TS_LIB="/usr/prog/tslib-1.12/etc"
@@ -32,4 +33,6 @@ else if grep -q "language: zh" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="zh";
 else if grep -q "language: ja" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="ja";
 else if grep -q "language: ko" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="ko";
 else if grep -q "language: pt" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="pt";
-fi; fi; fi; fi; fi; fi; fi; fi; fi; fi
+else if grep -q "language: tr" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="tr";
+else if grep -q "language: cs" ${MOD_CONF}/mod_data/lang.cfg; then ZLANG="cs";
+fi; fi; fi; fi; fi; fi; fi; fi; fi; fi; fi; fi

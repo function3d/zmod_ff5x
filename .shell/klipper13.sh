@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 if [ -f /usr/data/config/mod/.shell/fix_config.sh ]; then
     /usr/data/config/mod/.shell/fix_config.sh start
@@ -11,7 +12,7 @@ if [ -f /usr/data/config/mod/.shell/fix_config.sh ]; then
     export LD_LIBRARY_PATH=/usr/prog/libffi-3.4.4/lib:$LD_LIBRARY_PATH
 
     PYTHON=/usr/prog/Python-3.8.2/bin/python3
-    KLIPPER=/usr/data/config/mod/.shell/root/klippy/klippy.py
+    KLIPPER=/usr/data/config/base/klipper/klippy/klippy.py
     KLIPPER_CONF=/usr/data/config/printer.cfg
     KLIPPER_LOG=/usr/data/logs/printer.log
     PID_FILE=/run/klipper.pid

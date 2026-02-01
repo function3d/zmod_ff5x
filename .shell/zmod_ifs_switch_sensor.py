@@ -8,7 +8,6 @@ class ZmodIfsSwitchSensor:
     def __init__(self, config):
         self.printer = config.get_printer()
         self.name = config.get_name().split()[-1]
-        self.query_adc = self.printer.lookup_object('query_adc')
 
         self.runout_helper = RunoutHelper(config)
         self.get_status = self.runout_helper.get_status
@@ -21,12 +20,15 @@ class ZmodIfsSwitchSensor:
         else:
             self.new = False
 
-        self.timer = self.reactor.register_timer(self.check_state, self.reactor.NOW)
-
         self.printer.register_event_handler("klippy:ready", self._handle_ready)
         self.gcode = self.printer.lookup_object('gcode')
         self.gcode.register_command('IFS_SWITCH_ON', self.cmd_IFS_SWITCH_ON)
         self.gcode.register_command('IFS_SWITCH_OFF', self.cmd_IFS_SWITCH_OFF)
+
+    def _handle_ready(self):
+        self.query_adc = self.printer.lookup_object('query_adc')
+        self.timer = self.reactor.register_timer(self.check_state, self.reactor.NOW)
+        self.check_state(self.reactor.NOW)
 
     def cmd_IFS_SWITCH_ON(self, gcmd):
         if self.new:
@@ -41,10 +43,6 @@ class ZmodIfsSwitchSensor:
             self.runout_helper.note_filament_present(eventtime, False)
         else:
             self.runout_helper.note_filament_present(False)
-
-    def _handle_ready(self):
-
-        self.check_state(self.reactor.NOW)
 
     def check_state(self, eventtime):
         try:

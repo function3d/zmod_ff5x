@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 # "lanCode"
 # "printerSerialNumber"
 # Adventurer5M.json
@@ -14,8 +14,8 @@ fi
 if [ -f /ZMOD ]; then
     CCURL="/usr/bin/curl"
 else
-    if [ ${FF5X} -eq 1 ]; then
-        export LD_LIBRARY_PATH=//usr/prog/qt-4.8.6/lib:$LD_LIBRARY_PATH
+    if [ ${AD5X} -eq 1 ]; then
+        export LD_LIBRARY_PATH=/usr/prog/qt-4.8.6/lib:$LD_LIBRARY_PATH
         export LD_LIBRARY_PATH=/usr/prog/openssl-1.0.2d/lib:$LD_LIBRARY_PATH
         export LD_LIBRARY_PATH=/usr/prog/curl-7.55.1-https/lib:$LD_LIBRARY_PATH
         export LD_LIBRARY_PATH=/usr/prog/ffmpeg-4.0.2/lib:$LD_LIBRARY_PATH

@@ -1,34 +1,81 @@
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 import os
 import logging
+import json
+
+FFCONFIG1='/usr/prog/config/Adventurer5M.json'
+FFCONFIG2='/opt/config/Adventurer5M.json'
 
 class zmod:
     def __init__(self, config):
         self.printer = config.get_printer()
-        self.language = config.get('language', 'en')
+        self.lang = config.get('language', 'en')
+        self.ad5x = config.getboolean('ad5x', False)
+        self.screen = config.getboolean('screen', True)
+
         self.gcode = self.printer.lookup_object('gcode')
         gcode_macro = self.printer.load_object(config, 'gcode_macro')
         self.on_error_gcode = gcode_macro.load_template(
             config, 'on_error_gcode', '')
 
-        self.virtual_sdcard = self.printer.lookup_object('virtual_sdcard')
-        self.sdcard_dirname = self.virtual_sdcard.sdcard_dirname
+        self.virtual_sdcard = None
+        self.sdcard_dirname = ""
 
         self.gcode.register_command('SAVE_SHAPER', self.cmd_SAVE_SHAPER)
         self.gcode.register_command('ZEXCLUDE', self.cmd_ZEXCLUDE)
+        self.gcode.register_command('LOAD_ZOFFSET_NATIVE', self.cmd_LOAD_ZOFFSET_NATIVE)
+
+        self.printer.register_event_handler("klippy:ready", self._handle_ready)
+
+    def _handle_ready(self):
+        self.virtual_sdcard = self.printer.lookup_object('virtual_sdcard')
+        self.sdcard_dirname = self.virtual_sdcard.sdcard_dirname
 
     def get_lang(self):
-        return self.language
+        return self.lang
+
+    def cmd_LOAD_ZOFFSET_NATIVE(self, gcmd):
+        start = gcmd.get_int("START", 0)
+
+        config_path = FFCONFIG1 if os.path.isfile(FFCONFIG1) else FFCONFIG2 if os.path.isfile(FFCONFIG2) else None
+        if not config_path:
+            raise gcmd.error(f"LOAD_ZOFFSET_NATIVE: File not found {FFCONFIG1}, {FFCONFIG2}")
+
+        with open(config_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        try:
+            z_probe_offset = data['leftExtruderOffset']['zProbeOffset']
+        except KeyError as e:
+            z_probe_offset = 0.0
+
+        zoffset = round(float(z_probe_offset), 4)
+        if not self.ad5x:
+            zoffset += 0.025
+            if self.screen or start == 0:
+                if self.lang != 'ru':
+                    gcmd.respond_raw("Actual Z-Offset for AD5M/AD5MPro is 0.025mm greater than value displayed on native screen")
+                    gcmd.respond_raw(f"On native screen: {zoffset-0.025}")
+                    gcmd.respond_raw(f"Actual: {zoffset}")
+                else:
+                    gcmd.respond_raw("Фактический Z-Offset принтера AD5M/AD5MPro на 0.025 мм больше значения, отображаемого на родном экране")
+                    gcmd.respond_raw(f"На родном экране: {zoffset-0.025}")
+                    gcmd.respond_raw(f"Фактический: {zoffset}")
+
+        self.gcode.run_script_from_command(f"SET_GCODE_OFFSET Z={zoffset:.4f} START={start} FROM=LOAD_ZOFFSET_NATIVE")
 
     def cmd_ZEXCLUDE(self, gcmd):
-        filename = gcmd.get("FILENAME")
+        filename = gcmd.get("FILENAME", None)
         if not filename:
-            gcmd.respond_raw("ZEXCLUDE: FILENAME is required")
-            return
-
-        if filename.startswith('/'):
-            filename = filename[1:]
-
-        full_path = os.path.join(self.sdcard_dirname, filename)
+            file_path = self.virtual_sdcard.file_path()
+            if not file_path:
+                gcmd.respond_raw("ZEXCLUDE: FILENAME is required (no file loaded)")
+                return
+            full_path = file_path
+        else:
+            if filename.startswith('/'):
+                filename = filename[1:]
+            full_path = os.path.join(self.sdcard_dirname, filename)
 
         try:
             with open(full_path, 'r') as f:
@@ -83,17 +130,17 @@ class zmod:
         # Валидация параметров
         valid_shapers = ['mzv', 'zv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
         if shaper_name not in valid_shapers:
-            if self.language != 'ru':
+            if self.lang != 'ru':
                 raise gcmd.error("Invalid shaper. Allowed: %s" % ', '.join(valid_shapers))
             else:
                 raise gcmd.error("Неверный шейпер. Допустимые: %s" % ', '.join(valid_shapers))
         if frequency <= 0:
-            if self.language != 'ru':
+            if self.lang != 'ru':
                 raise gcmd.error("Frequency must be > 0")
             else:
                 raise gcmd.error("Частота должна быть > 0")
         if shaper_axis not in ['x', 'y']:
-            if self.language != 'ru':
+            if self.lang != 'ru':
                 raise gcmd.error("Axis must be X or Y")
             else:
                 raise gcmd.error("Ось должна быть X или Y")
@@ -104,7 +151,7 @@ class zmod:
         configfile.set('input_shaper', 'shaper_freq_%s' % shaper_axis, "%.1f" % frequency)
 
         # Информационное сообщение
-        if self.language != 'ru':
+        if self.lang != 'ru':
             gcmd.respond_info(
                 "Parameters for axis %s have been saved. Run SAVE_CONFIG to apply changes." %
                 shaper_axis.upper()

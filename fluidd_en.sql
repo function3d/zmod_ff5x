@@ -454,6 +454,15 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('flui
             "visible": true
         },
         {
+            "alias": "SCREEN",
+            "categoryId": "0077449b-cd10-4059-aebd-bf17be6cb270",
+            "color": "#ff0000",
+            "disabledWhilePrinting": false,
+            "name": "screen",
+            "order": 16,
+            "visible": true
+        },
+        {
             "alias": "",
             "categoryId": "0",
             "color": "",
@@ -788,14 +797,6 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('flui
             "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
             "color": "",
             "disabledWhilePrinting": false,
-            "name": "leveling_print_file",
-            "visible": false
-        },
-        {
-            "alias": "",
-            "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
-            "color": "",
-            "disabledWhilePrinting": false,
             "name": "sdcard_print_file",
             "order": 15,
             "visible": false
@@ -814,14 +815,6 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('flui
             "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
             "color": "",
             "disabledWhilePrinting": false,
-            "name": "noleveling_print_file",
-            "visible": false
-        },
-        {
-            "alias": "",
-            "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
-            "color": "",
-            "disabledWhilePrinting": false,
             "name": "fast_close_dialogs",
             "order": 3,
             "visible": true
@@ -833,6 +826,24 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('flui
             "disabledWhilePrinting": false,
             "name": "get_zmod_data",
             "order": 3,
+            "visible": true
+        },
+        {
+            "alias": "ENABLE_PLUGIN",
+            "categoryId": "09a46273-5af4-4fc4-b232-442934c1e810",
+            "color": "",
+            "disabledWhilePrinting": false,
+            "name": "enable_plugin",
+            "order": 12,
+            "visible": true
+        },
+        {
+            "alias": "DISABLE_PLUGIN",
+            "categoryId": "09a46273-5af4-4fc4-b232-442934c1e810",
+            "color": "",
+            "disabledWhilePrinting": false,
+            "name": "disable_plugin",
+            "order": 13,
             "visible": true
         },
         {
@@ -878,6 +889,24 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('flui
             "disabledWhilePrinting": false,
             "name": "ifs_unlock",
             "order": 16,
+            "visible": true
+        },
+        {
+            "alias": "",
+            "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
+            "color": "#008800",
+            "disabledWhilePrinting": false,
+            "name": "global",
+            "order": 17,
+            "visible": true
+        },
+        {
+            "alias": "",
+            "categoryId": "944c031b-feef-4b75-badf-21c30508fb24",
+            "color": "#008800",
+            "disabledWhilePrinting": false,
+            "name": "global",
+            "order": 17,
             "visible": true
         },
         {
@@ -1095,14 +1124,6 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('main
             },
             {
                "color" : "group",
-               "name" : "LEVELING_PRINT_FILE",
-               "pos" : 8,
-               "showInPause" : false,
-               "showInPrinting" : false,
-               "showInStandby" : false
-            },
-            {
-               "color" : "group",
                "name" : "CLOSE_DIALOGS",
                "pos" : 9,
                "showInPause" : true,
@@ -1124,14 +1145,6 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('main
                "showInPause" : true,
                "showInPrinting" : true,
                "showInStandby" : true
-            },
-            {
-               "color" : "group",
-               "name" : "NOLEVELING_PRINT_FILE",
-               "pos" : 12,
-               "showInPause" : false,
-               "showInPrinting" : false,
-               "showInStandby" : false
             },
             {
                "color" : "group",
@@ -1339,6 +1352,14 @@ INSERT INTO "main"."namespace_store" ("namespace", "key", "value") VALUES ('main
                "color" : "group",
                "name" : "SAVE_ZMOD_DATA",
                "pos" : 16,
+               "showInPause" : true,
+               "showInPrinting" : true,
+               "showInStandby" : true
+            },
+            {
+               "color" : "group",
+               "name" : "GLOBAL",
+               "pos" : 33,
                "showInPause" : true,
                "showInPrinting" : true,
                "showInStandby" : true

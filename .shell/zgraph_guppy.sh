@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 source /opt/config/mod/.shell/0.sh
 
@@ -7,7 +8,5 @@ unset LD_PRELOAD
 if [ -f /ZMOD ]; then
     /opt/config/mod/.shell/root/zshaper/graph_belts.py $@
 else
-    [ ${FF5X} -eq 0 ] && umount ${UMOUNT_MOD}
     chroot ${MOD} /opt/config/mod/.shell/root/zshaper/graph_belts.py $@
-    [ ${FF5X} -eq 0 ] && mount --bind ${REMOUNT_MOD} ${UMOUNT_MOD}
 fi

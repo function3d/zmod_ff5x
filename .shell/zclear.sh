@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 LOG_FILES="/data/logFiles"
 source /opt/config/mod/.shell/0.sh
@@ -8,6 +9,7 @@ if  [ "$1" == 1 ]
         rm -rf ${LOG_FILES}/*
         rm -rf /opt/config/mod_data/log/*
         rm -rf ${UPDATE_DIR}/*
+        find /opt/config/ -name '*.pyc' -delete
         sync
 fi
 

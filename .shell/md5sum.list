@@ -1548,7 +1548,6 @@ d89b7fb98cd1e4e3f1199595ace67b1c  ./usr/prog/klipper/klippy/extras/tmc.py
 ba54c5a953fa31b5677ee8e88321a731  ./usr/prog/klipper/klippy/extras/tsl1401cl_filament_width_sensor.py
 14f4a56540626e8ebed20585cb16bd22  ./usr/prog/klipper/klippy/extras/tuning_tower.py
 6d8cef9e8a0c5eb27a8d688ceec42b30  ./usr/prog/klipper/klippy/extras/verify_heater.py
-3cbf1a41850c4aef9b88735dc25fccea  ./usr/prog/klipper/klippy/extras/virtual_sdcard.py
 5ab083031fb0b988c214560ccaf3c1c4  ./usr/prog/klipper/klippy/extras/z_thermal_adjust.py
 f4cb3fde782342926d0ea52dd26d3013  ./usr/prog/klipper/klippy/extras/z_tilt.py
 05c1b7c10dd2f95e0eec35727f46f1db  ./usr/prog/klipper/klippy/gcode.py
@@ -1566,7 +1565,7 @@ f186cd64ed3224f93e651244dcaac110  ./usr/prog/klipper/klippy/kinematics/none.py
 bb394a5a36ae0445e9f79790a57188ad  ./usr/prog/klipper/klippy/kinematics/polar.py
 3862df061e08d80151bec398f5a6bcd3  ./usr/prog/klipper/klippy/kinematics/rotary_delta.py
 06fb900c30c1ebf29830fe3dfb68aeec  ./usr/prog/klipper/klippy/kinematics/winch.py
-335fe0dd37e7f779d72ef2adf6cfbbd7  ./usr/prog/klipper/klippy/klippy.py
+a8206120af2ffebbd7cab0ad03aad970  ./usr/prog/klipper/klippy/klippy.py
 04b97deed879bb6a310498309b3db07f  ./usr/prog/klipper/klippy/mathutil.py
 e5131df3cc7e576097bab7dc51c1719d  ./usr/prog/klipper/klippy/msgproto.py
 7330f28881c76d3950f937c49ef24f41  ./usr/prog/klipper/klippy/parsedump.py
@@ -5031,8 +5030,6 @@ e3eb0a1df437f3f97a64aca5952c8ea0  ./usr/prog/nginx/html/index.html
 025ce59fab18cc6e29d7cba7b60f3162  ./usr/prog/nginx/off
 e7bf6f5c3f43d7a85a65eff9592a865e  ./usr/prog/nginx/sbin/nginx
 e7bf6f5c3f43d7a85a65eff9592a865e  ./usr/prog/nginx/sbin/nginx.old
-ec9abc171632669acf43c15fa4fcc64a  ./usr/prog/nim/lib/libnim_chatroom.so
-81ce43a1684bdb10d9f6d57b833ffecc  ./usr/prog/nim/lib/libnim.so
 ad04afb943c3e5742becca48dc91cbf2  ./usr/prog/opencv-4.2.0_mips/bin/opencv_annotation
 75cf9a275e5d331d6efd579aa1dd0f17  ./usr/prog/opencv-4.2.0_mips/bin/opencv_interactive-calibration
 f3b05d770df7def6be827cc3496f6ede  ./usr/prog/opencv-4.2.0_mips/bin/opencv_version

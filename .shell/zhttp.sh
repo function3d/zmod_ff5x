@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 #
 # Web config
 #
@@ -24,7 +25,5 @@ sync
 if [ -f /ZMOD ]; then
     /opt/config/mod/.shell/root/S70httpd restart
 else
-    [ ${FF5X} -eq 0 ] && umount ${UMOUNT_MOD}
     chroot ${MOD} /opt/config/mod/.shell/root/S70httpd restart
-    [ ${FF5X} -eq 0 ] && mount --bind ${REMOUNT_MOD} ${UMOUNT_MOD}
 fi

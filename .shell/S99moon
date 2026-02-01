@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 source /opt/config/mod/.shell/0.sh
 
@@ -10,18 +11,14 @@ start() {
 
 stop() {
     printf "Stopping moon: "
-    [ ${FF5X} -eq 0 ] && umount ${UMOUNT_MOD}
     chroot ${MOD} /opt/config/mod/.shell/root/stop.sh
-    [ ${FF5X} -eq 0 ] && mount --bind ${REMOUNT_MOD} ${UMOUNT_MOD}
     echo "OK"
 }
 
 up() {
     printf "Starting moon: "
-    [ ${FF5X} -eq 0 ] && umount ${UMOUNT_MOD}
     chroot ${MOD} /opt/config/mod/.shell/root/start.sh &
     sleep 15
-    [ ${FF5X} -eq 0 ] && mount --bind ${REMOUNT_MOD} ${UMOUNT_MOD}
     echo "OK"
 }
 

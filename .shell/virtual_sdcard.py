@@ -83,6 +83,7 @@ class VirtualSD:
             flist = []
             for root, dirs, files in os.walk(
                     self.sdcard_dirname, followlinks=True):
+                dirs[:] = [d for d in dirs if d != '.zmod']
                 for name in files:
                     ext = name[name.rfind('.')+1:]
                     if ext not in VALID_GCODE_EXTS:
@@ -217,7 +218,7 @@ class VirtualSD:
             #if fname not in flist:
             #    fname = files_by_lower[fname.lower()]
             fname = os.path.join(self.sdcard_dirname, fname)
-            f = io.open(fname, 'r', newline='')
+            f = io.open(fname, 'r', encoding='utf-8', errors='ignore', newline='')
             f.seek(0, os.SEEK_END)
             fsize = f.tell()
             f.seek(0)
@@ -304,6 +305,9 @@ class VirtualSD:
                 next_file_position = self.file_position + len(line) + 1
             self.next_file_position = next_file_position
             #logging.info("Starting SD card print (line %s)", line)
+            #if line.startswith("EXCLUDE_OBJECT_DEFINE") or line.startswith("EXCLUDE_OBJECT_START") or line.startswith("EXCLUDE_OBJECT_END"):
+                #self.gcode.run_script("M400")
+                #self.reactor.pause(self.reactor.monotonic() + .005)
             if line.startswith("T") and self.enable_ffm:
                 cmd = line.split(';', 1)[0].strip()
                 if cmd in VALID_GCODE_T:
@@ -311,7 +315,7 @@ class VirtualSD:
                     if self.print_channel != self.load_channel:
                         self.gcode.run_script("M400")
                         self.change_filament = True
-                        # zmod 1.5
+                        # zmod 1.11
                         self.gcode.run_script(f"_A_CHANGE_FILAMENT CHANNEL={self.print_channel} RESTORE_POSITION=1 RESTORE_TEMP=1")
                         while True:
                             if not self.change_filament:
@@ -321,6 +325,7 @@ class VirtualSD:
                             self.reactor.pause(self.reactor.monotonic() + 0.5)
                     self.load_channel = self.print_channel
                     self.change_filament = False
+                    self.file_position = self.next_file_position
                     continue
             try:
                 self.gcode.run_script(line)

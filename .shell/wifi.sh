@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 set -x
 
@@ -35,9 +36,34 @@ wifi_fix()
         return 0
     fi
 
+    if grep -q '"ethernetStatus" : true' "$FFCONFIG"; then
+        echo "Ethernet enabled on original screen — skipping network restart."
+        return 0
+    fi
+
+    if grep -q '"wifiHotspotStatus" : true' "$FFCONFIG"; then
+        echo "WiFiHotspot enabled on original screen — skipping network restart."
+        return 0
+    fi
+
+    if grep -q '"isManual" : true' "$FFCONFIG"; then
+        echo "Manual enabled on original screen — skipping network restart."
+        return 0
+    fi
+
+    if grep -q '"isUdhcpc" : false' "$FFCONFIG"; then
+        echo "Dhcp disabled on original screen — skipping network restart."
+        return 0
+    fi
+
+    if ! grep -q "disabled=1" ${WPA_CONFIG}; then
+        echo "Wi-Fi not configured"
+        return 0
+    fi
+
     echo "WiFi station enabled — restarting network..."
 
-    [ ${FF5X} -eq 0 ] && insmod /lib/modules/8821cu.ko || insmod /usr/prog/modules/8821cu.ko power_on=PB07
+    [ ${AD5X} -eq 0 ] && insmod /lib/modules/8821cu.ko || insmod /usr/prog/modules/8821cu.ko power_on=PB07
 
     echo "Waiting for interface $INTERFACE to appear..."
 

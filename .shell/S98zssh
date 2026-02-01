@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 #
 # Start TelegramBot
 #
@@ -17,13 +18,20 @@ fi
 if ! [ -f /opt/config/mod_data/ssh.local.key ] || ! [ -f /opt/config/mod_data/ssh.local.txt ]; then
     dropbearkey -t rsa -f /opt/config/mod_data/ssh.local.key
     dropbearkey -y -t rsa -f /opt/config/mod_data/ssh.local.key |grep root >/opt/config/mod_data/ssh.local.txt
-    mkdir -p /root/.ssh/
-    chmod 700 /root/.ssh/
-    cat /opt/config/mod_data/ssh.local.txt >>/root/.ssh/authorized_keys
 fi
 
+if ! [ -f /root/.ssh/authorized_keys ]; then
+    mkdir -p /root/.ssh/
+    chmod 700 /root/.ssh/
+fi
 
-[ ${ZLANG} != 'ru' ] && echo "Zmod version: $(cat /opt/config/mod/version.txt) $(cat /opt/config/mod_data/date.txt)" || echo "Версия zmod: $(cat /opt/config/mod/version.txt) $(cat /opt/config/mod_data/date.txt)"
+KEY=$(cat /opt/config/mod_data/ssh.local.txt)
+if ! grep -q "$KEY" /root/.ssh/authorized_keys; then
+    echo "$KEY" >>/root/.ssh/authorized_keys
+    chmod 600 /root/.ssh/authorized_keys
+fi
+
+#/opt/config/mod/.shell/zversion.sh
 
 REMOTE_RUN="NONE"
 source /opt/config/mod_data/ssh.conf
@@ -39,7 +47,7 @@ start() {
             date >> ${LOG_FILE}
             dbclient -N -T -f -y  -i /opt/config/mod_data/ssh.key -p${SSH_PORT} -R ${VIDEO_PORT}:127.0.0.1:8080 -R ${MOON_PORT}:127.0.0.1:7125 ${SSH_USER}@${SSH_SERVER} -o ExitOnForwardFailure=yes >> ${LOG_FILE} 2>&1
             CMD="w"
-            [ ${FF5X} -eq 0 ] && CMD="axfw"
+            [ ${AD5X} -eq 0 ] && CMD="axfw"
             ps ${CMD}|grep '\-N \-T \-f \-y'| head -1| awk '{print $1}' >${PID_FILE}
             tail -n +$nstr ${LOG_FILE}
             [ "${REMOTE_RUN}" != "NONE" ] && \

@@ -1,8 +1,23 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 source /opt/config/mod/.shell/0.sh
 
 set -x
+
+
+start_moonraker() {
+    /opt/config/mod/.shell/root/S65moonraker start
+    /opt/config/mod/.shell/root/S70httpd start
+}
+
+start_klipper() {
+    if [ ${AD5X} -eq 0 ]; then
+        if grep -q "klipper13 = 1" /opt/config/mod_data/variables.cfg; then
+            /opt/config/mod/.shell/root/S60klipper start
+        fi
+    fi
+}
 
 get_origin_from_config() {
   local config_file="$1"
@@ -51,10 +66,43 @@ get_branch_from_config() {
   ' "$config_file"
 }
 
+update_plugins() {
+    grep '/root/printer_data/config/mod_data/plugins/' "$1" | sed 's|/$||' | sed 's|.*/||' | \
+    while read a; do
+        echo "Plugin $a"
+        if ! [ -f "${MOD_CONF}/mod_data/plugins/$a/.git/config" ]; then
+            url=$(get_origin_from_config "$1" "$a")
+            branch=$(get_branch_from_config "$1" "$a")
+            if [ "$url" != "" ] && [ "$branch" != "" ]; then
+                echo "Инициализирую репозиторий"
+                mkdir -p "${MOD_CONF}/mod_data/plugins/$a/"
+                sqlite3 /opt/config/mod_data/database/moonraker-sql.db \
+                "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = '$a'; \
+                 INSERT INTO namespace_store (namespace, key, value) VALUES ('update_manager', '$a', '{\"last_config_hash\":\"?\",\"last_refresh_time\":0.0,\"is_valid\":false,\"pip_version_info\":null,\"repo_valid\":false,\"git_owner\":\"none\",\"git_repo_name\":\"$a\",\"git_remote\":\"origin\",\"git_branch\":\"$branch\",\"current_version\":\"0.0.0.0\",\"upstream_version\":\"0.0.0.0\",\"current_commit\":\"?\",\"upstream_commit\":\"?\",\"rollback_commit\":\"?\",\"rollback_branch\":\"$branch\",\"rollback_version\":\"0.0.0.0\",\"upstream_url\":\"$url\",\"recovery_url\":\"$url\",\"branches\":[\"$branch\"],\"head_detached\":false,\"git_messages\":[],\"commits_behind\":[],\"cbh_count\":0,\"diverged\":false,\"corrupt\":true,\"modified_files\":[],\"untracked_files\":[],\"pinned_commit_valid\":true}');"
+            else
+                echo "Не найден url=$url или branch=$branh для $a. Пропускаю."
+            fi
+        else
+            echo "Репозиторий $a уже  существует, пропускаю."
+        fi
+    done
+}
+
+
+check_link()
+{
+    a=$(readlink "$1" 2>/dev/null)
+    if [ "$a" != "$2" ]; then
+        /bin/echo -n "$1 - Incorrect link ($a!=$2): "
+        rm -f "$1" 2>/dev/null
+        ln -s "$2" "$1" 2>/dev/null && echo "Исправлено"  || echo "Ошибка исправления"
+    fi
+}
+
 prepare_chroot()
 {
     echo ZMOD >/ZMOD
-    [ ${FF5X} -eq 0 ] && mv /tmp/localtime /etc/localtime
+    [ ${AD5X} -eq 0 ] && mv /tmp/localtime /etc/localtime
 
     mv /tmp/pointercal /etc/pointercal
     mv /tmp/ts.conf /etc/ts.conf
@@ -71,7 +119,28 @@ prepare_chroot()
     [ -L /etc/init.d/S98camera ] && rm -f /etc/init.d/S98camera
     [ -L /etc/init.d/S99camera ] || ln -s /opt/config/mod/.shell/root/S99camera /etc/init.d/
     [ -L /etc/init.d/S60klipper ] || ln -s /opt/config/mod/.shell/root/S60klipper /etc/init.d/
-    [ ${FF5X} -eq 0 ] && [ -L /root/klipper-env/klippy ] || ln -s /opt/config/mod/.shell/root/klippy /root/klipper-env/
+
+    check_link /root/klipper-env/klippy /opt/config/base/klipper/klippy
+    if [ -f /opt/config/base/klipper/klippy/klippy.py ]; then
+        check_link ${MOD_CONF}/base/klipper/klippy/extras/gcode_shell_command.py ${MOD_CONF}/mod/.shell/gcode_shell_command.py
+        check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod.py ${MOD_CONF}/mod/.shell/zmod.py
+
+        if [ ${AD5X} -eq 0 ]; then
+            check_link /opt/config/base/klipper/klippy/chelper/c_helper.so /opt/config/base/klipper/mcu/ff5m/c_helper.so
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/ens160.py ${MOD_CONF}/mod/.shell/ens160.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/flashforge_loadcell.py ${MOD_CONF}/mod/.shell/flashforge_loadcell.py
+        else
+            check_link ${MOD_CONF}/base/klipper/klippy/chelper/c_helper.so ${MOD_CONF}/base/klipper/mcu/ad5x/c_helper.so
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod_color.py ${MOD_CONF}/mod/.shell/zmod_color.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod_ifs_motion_sensor.py ${MOD_CONF}/mod/.shell/zmod_ifs_motion_sensor.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod_ifs_switch_sensor.py ${MOD_CONF}/mod/.shell/zmod_ifs_switch_sensor.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod_ifs.py ${MOD_CONF}/mod/.shell/zmod_ifs.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/zmod_tenz.py ${MOD_CONF}/mod/.shell/zmod_tenz.py
+            check_link ${MOD_CONF}/base/klipper/klippy/extras/virtual_sdcard.py ${MOD_CONF}/mod/.shell/virtual_sdcard.py
+        fi
+    fi
+
+    check_link /root/moonraker-env/moonraker /opt/config/base/moonraker
 
     [ -L /etc/init.d/S35tslib ] && rm -f /etc/init.d/S35tslib
     [ -L /etc/init.d/S80guppyscreen ] || ln -s /opt/config/mod/.shell/root/S80guppyscreen /etc/init.d/
@@ -81,13 +150,15 @@ prepare_chroot()
 
     [ -L /usr/lib/python3.12/site-packages/mido ] || ln -s /opt/config/mod/.shell/root/mido/ /usr/lib/python3.12/site-packages/
     [ -L /usr/lib/python3.12/site-packages/mido-1.3.3.dist-info ] || ln -s /opt/config/mod/.shell/root/mido-1.3.3.dist-info/ /usr/lib/python3.12/site-packages/
-    [ ${FF5X} -eq 0 ] && [ -L /root/klipper-env/lib/python3.12/site-packages/numpy ] || ln -s /usr/lib/python3.12/site-packages/numpy /root/klipper-env/lib/python3.12/site-packages/
+    [ ${AD5X} -eq 0 ] && [ -L /root/klipper-env/lib/python3.12/site-packages/numpy ] || ln -s /usr/lib/python3.12/site-packages/numpy /root/klipper-env/lib/python3.12/site-packages/
 
     [ -L /bin/sudo ] || ln -s /opt/config/mod/.shell/root/sudo /bin/sudo
 
     [ -L /usr/bin/audio ] || ln -s /opt/config/mod/.shell/root/audio/audio /usr/bin/audio
     [ -L /usr/bin/audio_midi.sh ] || ln -s /opt/config/mod/.shell/root/audio/audio_midi.sh /usr/bin/audio_midi.sh
     [ -L /usr/bin/audio.py ] || ln -s /opt/config/mod/.shell/root/audio/audio.py /usr/bin/audio.py
+
+
 
     CUR_DIR=$(pwd)
         cd /opt/config/mod/.shell/midi/
@@ -96,25 +167,52 @@ prepare_chroot()
         done
     cd ${CUR_DIR}
 
-    [ -L /bin/boot_eboard_mcu ] || ln -s /opt/config/mod/.shell/root/mcu/boot_eboard_mcu /bin/boot_eboard_mcu
+    if [ -f /opt/config/mod_data/plugins/g28_tenz/update.sh ] && ! [ -f /opt/config/mod_data/plugins/g28_tenz/zstop.cfg ]; then
+        cd /opt/config/mod_data/plugins/g28_tenz/
+        ./update.sh
+        cd ${CUR_DIR}
+    fi
+
+    #[ -L /bin/boot_eboard_mcu ] || ln -s /opt/config/mod/.shell/root/mcu/boot_eboard_mcu /bin/boot_eboard_mcu
     [ -L /bin/backlight ] || ln -s /opt/config/mod/.shell/root/backlight /bin/backlight
 
-    if [ ${FF5X} -eq 0 ]; then
-        rm -rf /root/moonraker-env/lib/python3.12/site-packages/uvloop*  || echo "uvloop уже убит"
+    rm -rf /root/moonraker-env/lib/python3.12/site-packages/uvloop*  || echo "uvloop уже убит"
+
+    # fix ssh keys
+    mkdir -p /root/.ssh/ /.ssh/
+    grep -q "zmod.link ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSFHaPS7Ms0PPIEE+E7T0eOZcCP4HZtUv7JJmCDDd9l" /root/.ssh/known_hosts || echo "zmod.link ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSFHaPS7Ms0PPIEE+E7T0eOZcCP4HZtUv7JJmCDDd9l" >>/root/.ssh/known_hosts
+    grep -q "zmod.link ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSFHaPS7Ms0PPIEE+E7T0eOZcCP4HZtUv7JJmCDDd9l" /.ssh/known_hosts || echo "zmod.link ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSFHaPS7Ms0PPIEE+E7T0eOZcCP4HZtUv7JJmCDDd9l" >>/.ssh/known_hosts
+    if [ ${AD5X} -eq 0 ]; then
         rm -rf /root/moonraker-env/lib/python3.12/site-packages/msgspec* || echo "msgspec уже убит"
+    else
+        sed -i '/127.0.0.1 /d' /.ssh/known_hosts
+        sed -i '/127.0.0.1 /d' /root/.ssh/known_hosts
+    fi
+
+    if ! [ -f /root/printer_data/moonraker.secrets ]; then
+        if [ -f /opt/config/mod_data/notify.txt ]; then
+            cp /opt/config/mod_data/notify.txt /root/printer_data/moonraker.secrets
+        else
+            echo "[notify]
+url: tgram://{bottoken}/{ChatID}
+name: {printer_name}
+" >/root/printer_data/moonraker.secrets
+        fi
     fi
 }
 
 ${MOD_CONF}/mod/.shell/znice.sh
 
-if [ ${FF5X} -eq 0 ]; then
+if [ ${AD5X} -eq 0 ]; then
     SWAP="$1"
     echo "SWAP=$SWAP"
 
-    if ! [ -f /root/swap ]; then dd if=/dev/zero of=/root/swap bs=1024 count=131072; mkswap /root/swap; fi;
-
-    if [ "$SWAP" == "/root/swap" ]; then
-        grep -q "use_swap = 0" /opt/config/mod_data/variables.cfg || swapon $SWAP
+    if [ "$SWAP" == "/root/swap" ] && ! grep -q "use_swap = 0" /opt/config/mod_data/variables.cfg; then
+        if ! swapon $SWAP; then
+            dd if=/dev/zero of=$SWAP bs=1024 count=131072
+            mkswap $SWAP
+            swapon $SWAP || echo "SWAP не включен!"
+        fi
     fi
 fi
 
@@ -144,46 +242,49 @@ grep -q VERSION_CODENAME /etc/os-release || echo "VERSION_CODENAME=\"${VER}\"" >
 grep -q "VERSION_CODENAME=\"${VER}\"" /etc/os-release || sed -i "s|VERSION_CODENAME=.*|VERSION_CODENAME=\"${VER}\"|" /etc/os-release
 
 V1=$(cat /etc/os-release|grep PRETTY_NAME| cut  -d '"' -f2| awk '{print $1" "$2}')
-V2=$(cat /opt/config/mod/version.txt)
+[ ${AD5X} -eq 0 ] && V2=$(cat /opt/config/mod/version_5m.txt) || V2=$(cat /opt/config/mod/version_5x.txt)
 
 grep -q PRETTY_NAME /etc/os-release || echo "VERSION_CODENAME=\"${V1} -> ${V2}\"" >>/etc/os-release
 grep -q "PRETTY_NAME=\"${V1} -> ${V2}\"" /etc/os-release || sed -i "s|PRETTY_NAME=.*|PRETTY_NAME=\"${V1} -> ${V2}\"|" /etc/os-release
 
 mkdir -p ${DATA_GCODES}/tmp
 
-if [ ${FF5X} -eq 0 ]; then
-    mount --bind ${REMOUNT_MOD} ${UMOUNT_MOD}
-    if grep -q "klipper13 = 1" /opt/config/mod_data/variables.cfg; then
-        /opt/config/mod/.shell/root/S60klipper start
-    fi
+KLIPPER=0
+if [ -f /opt/config/base/klipper/klippy/klippy.py ]; then
+    start_klipper
+    KLIPPER=1
 fi
 
+# Очищаем данные о старых обновлениях
+sqlite3 /opt/config/mod_data/database/moonraker-sql.db "DELETE FROM namespace_store WHERE namespace = 'update_manager';"
+
 # Создаем каталоги под плагины
-grep '/root/printer_data/config/mod_data/plugins/' /opt/config/moonraker.conf /opt/config/mod_data/user.moonraker.conf | sed 's|/$||' | sed 's|.*/||' | \
-while read a; do
-    echo "Plugin $a"
-    if ! [ -f "${MOD_CONF}/mod_data/plugins/$a/.git/config" ]; then
-        url=$(get_origin_from_config ${MOD_CONF}/moonraker.conf "$a")
-        if [ "$url" == "" ]; then
-            url=$(get_origin_from_config ${MOD_CONF}/mod_data/user.moonraker.conf "$a")
-        fi
-        branch=$(get_branch_from_config ${MOD_CONF}/moonraker.conf "$a")
-        if [ "$branch" == "" ]; then
-            branch=$(get_branch_from_config ${MOD_CONF}/mod_data/user.moonraker.conf "$a")
-        fi
-        if [ "$url" != "" ] && [ "$branch" != "" ]; then
-            echo "Инициализирую репозиторий"
-            mkdir -p "${MOD_CONF}/mod_data/plugins/$a/"
-            sqlite3 /opt/config/mod_data/database/moonraker-sql.db \
-            "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = '$a'; \
-             INSERT INTO namespace_store (namespace, key, value) VALUES ('update_manager', '$a', '{\"last_config_hash\":\"?\",\"last_refresh_time\":0.0,\"is_valid\":false,\"pip_version_info\":null,\"repo_valid\":false,\"git_owner\":\"none\",\"git_repo_name\":\"$a\",\"git_remote\":\"origin\",\"git_branch\":\"$branch\",\"current_version\":\"0.0.0.0\",\"upstream_version\":\"0.0.0.0\",\"current_commit\":\"?\",\"upstream_commit\":\"?\",\"rollback_commit\":\"?\",\"rollback_branch\":\"$branch\",\"rollback_version\":\"0.0.0.0\",\"upstream_url\":\"$url\",\"recovery_url\":\"$url\",\"branches\":[\"$branch\"],\"head_detached\":false,\"git_messages\":[],\"commits_behind\":[],\"cbh_count\":0,\"diverged\":false,\"corrupt\":true,\"modified_files\":[],\"untracked_files\":[],\"pinned_commit_valid\":true}');"
-        else
-            echo "Не найден url=$url или branch=$branh для $a. Пропускаю."
-        fi
-    else
-        echo "Репозиторий $a уже  существует, пропускаю."
-    fi
-done
+update_plugins /opt/config/moonraker.conf
+grep -q "extra_plugins.moonraker.conf" ${MOD_CONF}/mod_data/extra_plugins.moonraker.conf && update_plugins /opt/config/mod/extra_plugins.moonraker.conf
+update_plugins /opt/config/mod_data/user.moonraker.conf
+
+if ! [ -f /root/printer_data/config/base/klipper/klippy/klippy.py ]; then
+    branch="main"
+    url="https://github.com/ghzserg/zmod_klipper.git"
+    a="klippy"
+    sqlite3 /opt/config/mod_data/database/moonraker-sql.db \
+    "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = '$a'; \
+     INSERT INTO namespace_store (namespace, key, value) VALUES ('update_manager', '$a', '{\"last_config_hash\":\"?\",\"last_refresh_time\":0.0,\"is_valid\":false,\"pip_version_info\":null,\"repo_valid\":false,\"git_owner\":\"none\",\"git_repo_name\":\"$a\",\"git_remote\":\"origin\",\"git_branch\":\"$branch\",\"current_version\":\"0.0.0.0\",\"upstream_version\":\"0.0.0.0\",\"current_commit\":\"?\",\"upstream_commit\":\"?\",\"rollback_commit\":\"?\",\"rollback_branch\":\"$branch\",\"rollback_version\":\"0.0.0.0\",\"upstream_url\":\"$url\",\"recovery_url\":\"$url\",\"branches\":[\"$branch\"],\"head_detached\":false,\"git_messages\":[],\"commits_behind\":[],\"cbh_count\":0,\"diverged\":false,\"corrupt\":true,\"modified_files\":[],\"untracked_files\":[],\"pinned_commit_valid\":true}');"
+else
+    CUR_DIR=$(pwd)
+    cd /root/printer_data/config/base/klipper
+    git update-index --skip-worktree klippy/extras/virtual_sdcard.py
+    cd ${CUR_DIR}
+fi
+
+if ! [ -f /root/printer_data/config/base/moonraker/moonraker.py ]; then
+    branch="main"
+    url="https://github.com/ghzserg/zmod_moonraker.git"
+    a="moon"
+    sqlite3 /opt/config/mod_data/database/moonraker-sql.db \
+    "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = '$a'; \
+     INSERT INTO namespace_store (namespace, key, value) VALUES ('update_manager', '$a', '{\"last_config_hash\":\"?\",\"last_refresh_time\":0.0,\"is_valid\":false,\"pip_version_info\":null,\"repo_valid\":false,\"git_owner\":\"none\",\"git_repo_name\":\"$a\",\"git_remote\":\"origin\",\"git_branch\":\"$branch\",\"current_version\":\"0.0.0.0\",\"upstream_version\":\"0.0.0.0\",\"current_commit\":\"?\",\"upstream_commit\":\"?\",\"rollback_commit\":\"?\",\"rollback_branch\":\"$branch\",\"rollback_version\":\"0.0.0.0\",\"upstream_url\":\"$url\",\"recovery_url\":\"$url\",\"branches\":[\"$branch\"],\"head_detached\":false,\"git_messages\":[],\"commits_behind\":[],\"cbh_count\":0,\"diverged\":false,\"corrupt\":true,\"modified_files\":[],\"untracked_files\":[],\"pinned_commit_valid\":true}');"
+fi
 
 if grep -q mainsail-crew /root/mainsail/release_info.json; then
     echo '{"project_name":"mainsail","project_owner":"ghzserg","version":"v1.0.0"}' >/root/mainsail/release_info.json
@@ -195,10 +296,16 @@ if grep -q fluidd-core /root/fluidd/release_info.json; then
     sqlite3 /opt/config/mod_data/database/moonraker-sql.db "DELETE FROM namespace_store WHERE namespace = 'update_manager' AND key = 'fluidd';"
 fi
 
-/opt/config/mod/.shell/root/S65moonraker start
-/opt/config/mod/.shell/root/S70httpd start
+# Rem tmp TIMELapse
+[ -d /root/printer_data/gcodes/timelapse/tmp ] && rm -rf /root/printer_data/gcodes/timelapse/tmp/*
 
-date -s "2025-10-21 00:00:00"
+MOONRAKER=0
+if [ -f /opt/config/base/moonraker/moonraker.py ]; then
+    start_moonraker
+    MOONRAKER=1
+fi
+
+date -s "2026-01-01 00:00:00"
 
 # Пробуем синхронизировать время
 ntpd -dd -n -q -p pool.ntp.org || \
@@ -248,4 +355,21 @@ for i in `seq 0 50`; do
     sleep 5
 done
 date
+
+cd /opt/config/base/
+# Klipper
+if ! [ -f klipper/klippy/klippy.py ]; then
+    git clone https://github.com/ghzserg/zmod_klipper klipper
+fi
+if [ -f klipper/klippy/klippy.py ] && [ "${KLIPPER}" -eq 0 ]; then
+    start_klipper
+fi
+
+# Moonraker
+if ! [ -f moonraker/moonraker.py ]; then
+    git clone https://github.com/ghzserg/zmod_moonraker moonraker
+fi
+if [ -f moonraker/moonraker.py ] && [ "${MOONRAKER}" -eq 0 ]; then
+    start_moonraker
+fi
 echo "Start END"

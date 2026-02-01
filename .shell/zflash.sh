@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2024-2026 ghzserg https://github.com/ghzserg/zmod
 
 source /opt/config/mod/.shell/0.sh
 
@@ -9,14 +10,14 @@ fi
 
 if ! mount |grep media >/dev/null; then
     mkdir -p /media
-    mount /dev/sda /media 2>/dev/null || mount /dev/sda1 /media 2>/dev/null
+    mount -t vfat -o rw,relatime,fmask=0022,dmask=0022,codepage=936,iocharset=utf8,shortname=mixed,utf8,errors=remount-ro /dev/sda /media 2>/dev/null || mount -t vfat -o rw,relatime,fmask=0022,dmask=0022,codepage=936,iocharset=utf8,shortname=mixed,utf8,errors=remount-ro /dev/sda1 /media 2>/dev/null
 fi
 if ! mount |grep media >/dev/null; then
     [ "${ZLANG}" != 'ru' ] && echo "Flash drive not connected. Insert the flash drive and restart the printer." || echo "Флешка не подключена. Вставьте флешку и перезагрузите принтер."
     exit 1
 fi
 
-if [ ${FF5X} -eq 1 ]; then
+if [ ${AD5X} -eq 1 ]; then
     export LD_LIBRARY_PATH=//usr/prog/qt-4.8.6/lib:$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=/usr/prog/openssl-1.0.2d/lib:$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=/usr/prog/curl-7.55.1-https/lib:$LD_LIBRARY_PATH

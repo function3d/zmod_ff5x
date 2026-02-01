@@ -6,7 +6,6 @@ import subprocess
 
 FFCONFIG='/usr/prog/config/Adventurer5M.json'
 FILE_CONFIG='/usr/data/config/mod_data/file.json'
-COLOR_CONFIG = '/usr/data/config/mod_data/color.json'
 
 TRANSLATIONS = {
     'ru': {
@@ -30,9 +29,8 @@ TRANSLATIONS = {
         'no_response': "!! Нет ответа от принтера. Настройте принтер: \"Настройки\" -> \"WiFi\" -> \"Сетевой режим\" -> \"Только локальные сети\"\n{}",
         'printing_error': "!! Ошибка печати файла\n{}",
         'prompt_choose': "Выберите катушку для изменения",
-        'prompt_file': "Файл для печати: {}",
-        'prompt_leveling_off': "Печать без карты стола",
-        'prompt_leveling_on': "Печать с картой стола",
+        'prompt_leveling_off': "Не снимать карту стола",
+        'prompt_leveling_on': "Снять карту стола",
         'prompt_map_color': "Сопоставьте цвет из файла с катушкой",
         'prompt_material': "Загруженный материал",
         'reset_colors': "Сбросить цвета",
@@ -44,7 +42,8 @@ TRANSLATIONS = {
         'spool': "Катушка",
         'unload_error': "Ошибка выгрузки: {}",
         'unload_success': "Выгрузка начата",
-        'unload': "Выгрузить"
+        'unload': "Выгрузить",
+        'remove_from_extruder': "Извлечь из экструдера"
     },
     'en': {
         'cancel': "Cancel",
@@ -67,9 +66,8 @@ TRANSLATIONS = {
         'no_response': "!! No response from printer. Configure via: \"Settings\" -> \"WiFi\" -> \"Network Mode\" -> \"Local Only\"\n{}",
         'printing_error': "!! File printing error\n{}",
         'prompt_choose': "Select a spool to modify",
-        'prompt_file': "File to print: {}",
-        'prompt_leveling_off': "Print without bed leveling",
-        'prompt_leveling_on': "Print with bed leveling",
+        'prompt_leveling_off': "Leveling Off",
+        'prompt_leveling_on': "Leveling On",
         'prompt_map_color': "Map file color to spool",
         'prompt_material': "Loaded material",
         'reset_colors': "Reset colors",
@@ -81,7 +79,8 @@ TRANSLATIONS = {
         'spool': "in spool",
         'unload_error': "Unloading error: {}",
         'unload_success': "Unloading started",
-        'unload': "Unload"
+        'unload': "Unload",
+        'remove_from_extruder': "Remove from extruder"
     },
     'de': {
         'cancel': "Abbrechen",
@@ -104,7 +103,6 @@ TRANSLATIONS = {
         'no_response': "!! Keine Antwort vom Drucker. Konfigurieren Sie: \"Einstellungen\" -> \"WLAN\" -> \"Netzwerkmodus\" -> \"Nur lokal\"\n{}",
         'printing_error': "!! Fehler beim Drucken der Datei\n{}",
         'prompt_choose': "Wählen Sie eine Spule zum Ändern",
-        'prompt_file': "Zu druckende Datei: {}",
         'prompt_leveling_off': "Drucken ohne Bett-Nivellierung",
         'prompt_leveling_on': "Drucken mit Bett-Nivellierung",
         'prompt_map_color': "Farbe aus Datei einer Spule zuordnen",
@@ -118,7 +116,8 @@ TRANSLATIONS = {
         'spool': "in Spule",
         'unload_error': "Fehler beim Entladen: {}",
         'unload_success': "Entladen gestartet",
-        'unload': "Entladen"
+        'unload': "Entladen",
+        'remove_from_extruder': "Vom Extruder entfernen"
     },
     'fr': {
         'cancel': "Annuler",
@@ -141,7 +140,6 @@ TRANSLATIONS = {
         'no_response': "!! Aucune réponse de l'imprimante. Configurez via : \"Paramètres\" -> \"WiFi\" -> \"Mode réseau\" -> \"Réseau local uniquement\"\n{}",
         'printing_error': "!! Erreur d'impression du fichier\n{}",
         'prompt_choose': "Sélectionnez une bobine à modifier",
-        'prompt_file': "Fichier à imprimer : {}",
         'prompt_leveling_off': "Imprimer sans nivellement du lit",
         'prompt_leveling_on': "Imprimer avec nivellement du lit",
         'prompt_map_color': "Associer la couleur du fichier à une bobine",
@@ -155,7 +153,8 @@ TRANSLATIONS = {
         'spool': "dans la bobine",
         'unload_error': "Erreur de déchargement : {}",
         'unload_success': "Déchargement commencé",
-        'unload': "Décharger"
+        'unload': "Décharger",
+        'remove_from_extruder': "Retirer de l'extrudeuse"
     },
     'it': {
         'cancel': "Annulla",
@@ -178,7 +177,6 @@ TRANSLATIONS = {
         'no_response': "!! Nessuna risposta dalla stampante. Configura tramite: \"Impostazioni\" -> \"WiFi\" -> \"Modalità rete\" -> \"Solo locale\"\n{}",
         'printing_error': "!! Errore di stampa del file\n{}",
         'prompt_choose': "Seleziona una bobina da modificare",
-        'prompt_file': "File da stampare: {}",
         'prompt_leveling_off': "Stampa senza livellamento del letto",
         'prompt_leveling_on': "Stampa con livellamento del letto",
         'prompt_map_color': "Associa il colore del file alla bobina",
@@ -192,7 +190,8 @@ TRANSLATIONS = {
         'spool': "nella bobina",
         'unload_error': "Errore di scaricamento: {}",
         'unload_success': "Scaricamento avviato",
-        'unload': "Scarica"
+        'unload': "Scarica",
+        'remove_from_extruder': "Rimuovere dall'estrusore"
     },
     'es': {
         'cancel': "Cancelar",
@@ -215,7 +214,6 @@ TRANSLATIONS = {
         'no_response': "!! Sin respuesta de la impresora. Configure en: \"Ajustes\" -> \"WiFi\" -> \"Modo de red\" -> \"Solo local\"\n{}",
         'printing_error': "!! Error al imprimir el archivo\n{}",
         'prompt_choose': "Seleccione un carrete para modificar",
-        'prompt_file': "Archivo para imprimir: {}",
         'prompt_leveling_off': "Imprimir sin nivelación de cama",
         'prompt_leveling_on': "Imprimir con nivelación de cama",
         'prompt_map_color': "Mapear color del archivo al carrete",
@@ -229,7 +227,8 @@ TRANSLATIONS = {
         'spool': "en el carrete",
         'unload_error': "Error de descarga: {}",
         'unload_success': "Descarga iniciada",
-        'unload': "Descargar"
+        'unload': "Descargar",
+        'remove_from_extruder': "Extraer del extrusor"
     },
     'zh': {
         'cancel': "取消",
@@ -252,7 +251,6 @@ TRANSLATIONS = {
         'no_response': "!! 打印机无响应。请通过以下方式配置：\"设置\" -> \"WiFi\" -> \"网络模式\" -> \"仅本地网络\"\n{}",
         'printing_error': "!! 文件打印错误\n{}",
         'prompt_choose': "选择要修改的线轴",
-        'prompt_file': "要打印的文件：{}",
         'prompt_leveling_off': "不使用调平打印",
         'prompt_leveling_on': "使用调平打印",
         'prompt_map_color': "将文件颜色映射到线轴",
@@ -266,7 +264,8 @@ TRANSLATIONS = {
         'spool': "在线轴中",
         'unload_error': "卸载错误：{}",
         'unload_success': "开始卸载",
-        'unload': "卸载"
+        'unload': "卸载",
+        'remove_from_extruder': "从挤出机中取出"
     },
     'ja': {
         'cancel': "キャンセル",
@@ -289,7 +288,6 @@ TRANSLATIONS = {
         'no_response': "!! プリンターから応答なし。設定方法：\"設定\" -> \"WiFi\" -> \"ネットワークモード\" -> \"ローカルのみ\"\n{}",
         'printing_error': "!! ファイル印刷エラー\n{}",
         'prompt_choose': "変更するスプールを選択",
-        'prompt_file': "印刷するファイル：{}",
         'prompt_leveling_off': "ベッドレベリングなしで印刷",
         'prompt_leveling_on': "ベッドレベリングを使用して印刷",
         'prompt_map_color': "ファイルの色をスプールにマッピング",
@@ -303,7 +301,8 @@ TRANSLATIONS = {
         'spool': "スプール内",
         'unload_error': "排出エラー：{}",
         'unload_success': "排出を開始",
-        'unload': "排出する"
+        'unload': "排出する",
+        'remove_from_extruder': "エクストルーダーから取り出す"
     },
     'ko': {
         'cancel': "취소",
@@ -326,7 +325,6 @@ TRANSLATIONS = {
         'no_response': "!! 프린터 응답 없음. 설정 방법: \"설정\" -> \"WiFi\" -> \"네트워크 모드\" -> \"로컬 전용\"\n{}",
         'printing_error': "!! 파일 인쇄 오류\n{}",
         'prompt_choose': "수정할 스풀 선택",
-        'prompt_file': "인쇄할 파일: {}",
         'prompt_leveling_off': "레벨링 없이 인쇄",
         'prompt_leveling_on': "레벨링으로 인쇄",
         'prompt_map_color': "파일 색상을 스풀에 매핑",
@@ -340,7 +338,8 @@ TRANSLATIONS = {
         'spool': "스풀 내",
         'unload_error': "언로드 오류: {}",
         'unload_success': "언로드 시작",
-        'unload': "언로드"
+        'unload': "언로드",
+        'remove_from_extruder': "익스트루더에서 제거"
     },
     'pt': {
         'cancel': "Cancelar",
@@ -363,7 +362,6 @@ TRANSLATIONS = {
         'no_response': "!! Sem resposta da impressora. Configure via: \"Configurações\" -> \"WiFi\" -> \"Modo de Rede\" -> \"Apenas Local\"\n{}",
         'printing_error': "!! Erro na impressão do arquivo\n{}",
         'prompt_choose': "Selecione uma bobina para modificar",
-        'prompt_file': "Arquivo para imprimir: {}",
         'prompt_leveling_off': "Imprimir sem nivelamento da mesa",
         'prompt_leveling_on': "Imprimir com nivelamento da mesa",
         'prompt_map_color': "Mapear cor do arquivo para bobina",
@@ -377,7 +375,82 @@ TRANSLATIONS = {
         'spool': "na bobina",
         'unload_error': "Erro ao descarregar: {}",
         'unload_success': "Descarga iniciada",
-        'unload': "Descarregar"
+        'unload': "Descarregar",
+        'remove_from_extruder': "Remover da extrusora"
+    },
+    "cs": {
+        "cancel": "Zrušit",
+        "change_color": "Změnit barvu",
+        "change_spool": "Měním na cívku {}: {} / {}",
+        "change_type": "Změnit typ",
+        "config_error": "!! Chyba při změně barvy / typu\n{}",
+        "config_success": "Nastavení uložena",
+        "error_color_or_type": "Zadejte HEX nebo TYP",
+        "error_leveling": "Neplatný LEVELING: {}. Povoleno: 0 nebo 1",
+        "error_napr": "Nepovolený směr (0–1)",
+        "error_no_filename": "Není zadán název souboru (FILENAME).",
+        "error_slot": "Neplatný SLOT. Povolené: 1–4",
+        "error_tool": "Neplatný T{}: {}. Povoleno: 1–4",
+        "error_type": "Neplatný typ materiálu: {}. Povoleno: {}",
+        "file_tool": "Soubor",
+        "load_error": "!! Chyba při zavádění / vyndávání\n{}",
+        "load_success": "Zavádění spuštěno",
+        "load": "Zavést",
+        "no_response": "!! Tiskárna neodpovídá. Nastavte tiskárnu: „Nastavení“ → „WiFi“ → „Síťový režim“ → „Pouze místní sítě“\n{}",
+        "printing_error": "!! Chyba tisku souboru\n{}",
+        "prompt_choose": "Vyberte cívku ke změně",
+        "prompt_leveling_off": "Tisk bez mapy podložky",
+        "prompt_leveling_on": "Tisk s mapou podložky",
+        "prompt_map_color": "Přiřaďte barvu ze souboru k cívce",
+        "prompt_material": "Nahraný materiál",
+        "reset_colors": "Obnovit barvy",
+        "select_action": "Vyberte akci",
+        "select_color": "Vyberte barvu",
+        "select_type": "Vyberte typ materiálu",
+        "send_print": "Odeslat k tisku",
+        "spool_info": "Cívka {}: {}/{}",
+        "spool": "Cívka",
+        "unload_error": "Chyba vyndávání: {}",
+        "unload_success": "Vyndávání spuštěno",
+        "unload": "Vyndat",
+        'remove_from_extruder': "Vyjmout z extruderu"
+    },
+    'tr': {
+        'cancel': "İptal",
+        'change_color': "Rengi değiştir",
+        'change_spool': "{} no'lu makaraya geçiliyor: {}/{}",
+        'change_type': "Türü değiştir",
+        'config_error': "!! Renk/tür değiştirme hatası\n{}",
+        'config_success': "Ayarlar kaydedildi",
+        'error_color_or_type': "HEX veya TÜR belirtin",
+        'error_leveling': "Geçersiz SEVİYELEME: {}. Geçerli: 0 veya 1",
+        'error_napr': "Geçersiz yön (0-1)",
+        'error_no_filename': "DOSYA_ADI parametresi eksik",
+        'error_slot': "Geçersiz YUVAL. Geçerli: 1-4",
+        'error_tool': "Geçersiz T{}: {}. Geçerli: 1-4",
+        'error_type': "Geçersiz malzeme türü: {}. Geçerli: {}",
+        'file_tool': "Dosyada",
+        'load_error': "!! Yükleme/boşaltma hatası\n{}",
+        'load_success': "Yükleme başlatıldı",
+        'load': "Yükle",
+        'no_response': "!! Yazıcıdan yanıt alınamadı. Şu yolla yapılandırın: \"Ayarlar\" -> \"WiFi\" -> \"Ağ Modu\" -> \"Sadece Yerel\"\n{}",
+        'printing_error': "!! Dosya yazdırma hatası\n{}",
+        'prompt_choose': "Değiştirmek için bir makara seçin",
+        'prompt_leveling_off': "Seviyeleme Kapalı",
+        'prompt_leveling_on': "Seviyeleme Açık",
+        'prompt_map_color': "Dosya rengini makarayla eşleştir",
+        'prompt_material': "Yüklü malzeme",
+        'reset_colors': "Renkleri sıfırla",
+        'select_action': "Bir işlem seçin",
+        'select_color': "Renk seçin",
+        'select_type': "Malzeme türünü seçin",
+        'send_print': "Yazdırmayı başlat",
+        'spool_info': "Makaradaki {}: {}/{}",
+        'spool': "makara",
+        'unload_error': "Boşaltma hatası: {}",
+        'unload_success': "Boşaltma başlatıldı",
+        'unload': "Boşalt",
+        'remove_from_extruder': "Ekstruderden çıkar"
     }
 }
 
@@ -386,7 +459,7 @@ class zmod_color:
         self.printer = config.get_printer()
 
         self.display = config.getboolean('display', True)
-        self.language = 'en'
+        self.lang = 'en'
         self.ifs = False
         self.valid_types = ['PLA', 'ABS', 'PETG', 'TPU', 'PLA-CF', 'PETG-CF', 'SILK', '?']
         self.gcode = self.printer.lookup_object('gcode')
@@ -402,17 +475,26 @@ class zmod_color:
         self.gcode.register_command('UPDATE_FF_OFFSET', self.cmd_UPDATE_FF_OFFSET)
         self.printer.register_event_handler("klippy:ready", self._handle_ready)
 
-        self.COLOR_MAPPING = {}
-        try:
-            with open(COLOR_CONFIG, 'r', encoding='utf-8') as f:
-                self.COLOR_MAPPING = json.load(f)
-        except Exception as e:
-            self.COLOR_MAPPING = {}
-
         with open(FFCONFIG, 'r') as file:
             data = json.load(file)
             self.serialNumber = data['general']['printerSerialNumber']
             self.checkCode = data['general']['lanCode']
+
+    def _handle_ready(self):
+        self.zmod = self.printer.lookup_object('zmod', None)
+        if self.zmod is not None:
+            self.lang = self.zmod.get_lang()
+
+        self.COLOR_MAPPING = {}
+        try:
+            with open(f"/usr/data/config/mod_data/color/{self.lang}.json", 'r', encoding='utf-8') as f:
+                self.COLOR_MAPPING = json.load(f)
+        except Exception as e:
+            self.COLOR_MAPPING = {}
+
+        self.zmod_ifs = self.printer.lookup_object('zmod_ifs', None)
+        self.query_adc = self.printer.lookup_object('query_adc')
+        self.virtual_sd = self.printer.lookup_object('virtual_sdcard')
 
     def cmd_UPDATE_FF_OFFSET(self, gcmd):
         with open(FFCONFIG, 'r') as file:
@@ -422,18 +504,10 @@ class zmod_color:
             self.CutYOffset = float(data['leftExtruderOffset']['CutYOffset']) - 7.5
             self.yOffset    = float(data['leftExtruderOffset']['yOffset']) + 229
 
-            self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_REZGEM_PRUTOK VARIABLE=x_cut VALUE={self.CutXOffset:.2f}")
-            self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_REZGEM_PRUTOK VARIABLE=y_cut VALUE={self.CutYOffset:.2f}")
+            self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_CUT_PRUTOK VARIABLE=x_cut VALUE={self.CutXOffset:.2f}")
+            self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_CUT_PRUTOK VARIABLE=y_cut VALUE={self.CutYOffset:.2f}")
             self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_CLIENT_VARIABLE VARIABLE=custom_park_y VALUE={self.yOffset:.2f}")
             self.gcode.run_script_from_command(f"SET_GCODE_VARIABLE MACRO=_CLIENT_VARIABLE VARIABLE=park_at_cancel_y VALUE={self.yOffset:.2f}")
-
-    def _handle_ready(self):
-        self.zmod = self.printer.lookup_object('zmod', None)
-        if self.zmod is not None:
-            self.language = self.zmod.get_lang()
-        self.zmod_ifs = self.printer.lookup_object('zmod_ifs', None)
-        self.query_adc = self.printer.lookup_object('query_adc')
-        self.virtual_sd = self.printer.lookup_object('virtual_sdcard')
 
     def get_display(self):
         return self.display
@@ -566,7 +640,7 @@ class zmod_color:
             return None, str(e)
 
     def _t(self, key, *args):
-        return TRANSLATIONS[self.language][key].format(*args)
+        return TRANSLATIONS[self.lang][key].format(*args)
 
     def parse_printer_response(self, response_data):
         slots_info = []
@@ -578,7 +652,7 @@ class zmod_color:
                     slot_id = slot.get('slotId', 'N/A')
                     material = slot.get('materialName', 'N/A').upper()
                     hex_color = slot.get('materialColor', '161616').replace("#", "")
-                    color_name = self.COLOR_MAPPING.get(hex_color.lower(), {}).get(self.language, hex_color)
+                    color_name = self.COLOR_MAPPING.get(hex_color.lower(), hex_color)
                     slots_info.append({
                         'ID': slot_id,
                         'Material': material,
@@ -590,7 +664,7 @@ class zmod_color:
             if slot:
                 material = slot.get('materialName', 'N/A').upper()
                 hex_color = slot.get('materialColor', '161616').replace("#", "")
-                color_name = self.COLOR_MAPPING.get(hex_color.lower(), {}).get(self.language, hex_color)
+                color_name = self.COLOR_MAPPING.get(hex_color.lower(), hex_color)
                 slots_info.append({
                     'ID': 0,
                     'Material': material,
@@ -637,23 +711,26 @@ class zmod_color:
             result = self.parse_printer_response(response_data)
 
             prompt_text = f"Extruder: None ({self.get_current_channel()})"
-            if self.get_extruder_sensor():
+            button_text = ""
+            if self.get_extruder_sensor() and not self.display:
                 prompt_text = f"Extruder: {self.get_current_channel()}"
                 for slot in result:
                     if self.get_current_channel() == int(slot['ID']):
                         prompt_text = f"Extruder: {slot['ID']}: {slot['Material']}/{slot['Color']}"
+                        button_text = f"// action:prompt_button {self._t('remove_from_extruder')}|_IFS_REMOVE_CURRENT_PRUTOK|primary|{slot['HEX']}"
                         break
 
             if silent == 0:
-                gcmd.respond_raw(f"// action:prompt_text {prompt_text}")
-                gcmd.respond_raw(f"// action:prompt_text IFS: {self.ifs}")
-
+                gcmd.respond_raw(f"// action:prompt_text {prompt_text} | IFS: {self.ifs}")
+                if button_text:
+                    gcmd.respond_raw(f"{button_text}")
                 gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_choose')}")
                 gcmd.respond_raw("// action:prompt_button_group_start")
             else:
                 gcmd.respond_raw(f"// {prompt_text} | IFS: {self.ifs}")
             for slot in result:
-                btn_text = f"{slot['ID']}: {slot['Material']}"
+                color_name = slot['Color'].replace('_', '/', 1) if slot['Color'].startswith('_') else ''
+                btn_text = f"{slot['ID']}: {slot['Material']}{color_name}"
                 if silent == 0:
                     gcmd.respond_raw(f"// action:prompt_button {btn_text}|RUN_ZCOLOR SLOT={slot['ID']} HEX={slot['HEX']} TYPE={slot['Material']}|primary|{slot['HEX']}")
                 else:
@@ -709,20 +786,35 @@ class zmod_color:
             if silent == 0:
                 gcmd.respond_raw("// action:prompt_end")
                 gcmd.respond_raw(f"// action:prompt_begin {self._t('prompt_material')}")
-                gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_map_color')}")
-                gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_file', fname)}")
+                prompt_text = f"Extruder: None ({self.get_current_channel()})"
+                if self.get_extruder_sensor():
+                    prompt_text = f"Extruder: {self.get_current_channel()}"
+                    for slot in result:
+                        if self.get_current_channel() == int(slot['ID']):
+                            prompt_text = f"Extruder: {slot['ID']}: {slot['Material']}/{slot['Color']}"
+                            break
 
-                gcmd.respond_raw(f"// action:prompt_text {leveling_text}")
+                gcmd.respond_raw(f"// action:prompt_text {fname}")
+
+                gcmd.respond_raw(f"// action:prompt_text {prompt_text}")
+
+                gcmd.respond_raw("// action:prompt_button_group_start")
+                color = "006400" if leveling == 1 else "808080"
+                gcmd.respond_raw(f"// action:prompt_button {leveling_text}|SET_ZCOLOR SILENT={silent} FILENAME=\"{fname}\" LEVELING={int(not leveling)} T0={tools[0]} T1={tools[1]} T2={tools[2]} T3={tools[3]}| |{color}")
+                gcmd.respond_raw("// action:prompt_button_group_end")
+
+                gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_map_color')}")
 
                 gcmd.respond_raw("// action:prompt_button_group_start")
                 for tool_idx, tool_val in enumerate(tools):
                     for slot_info in result:
                         if int(slot_info['ID']) != tool_val:
                             continue
+                        color_name = slot_info['Color'].replace('_', '/', 1) if slot_info['Color'].startswith('_') else ''
                         btn_text = (
                             f"T{tool_idx} -> "
                             f"{slot_info['ID']}: "
-                            f"{slot_info['Material']}"
+                            f"{slot_info['Material']}{color_name}"
                         )
                         params = (
                             f"LEVELING={leveling} FILENAME=\"{fname}\" "
@@ -743,8 +835,13 @@ class zmod_color:
                 gcmd.respond_raw(f"// action:prompt_footer_button {self._t('cancel')}|RESPOND TYPE=command MSG=action:prompt_end")
                 gcmd.respond_raw("// action:prompt_show")
             elif silent == 1:
+                gcmd.respond_raw(f"// {fname}")
                 gcmd.respond_raw(f"// {leveling_text}")
-                gcmd.respond_raw(f"// IFS ON")
+                gcmd.respond_raw("// IFS ON // SAVE_ZMOD_DATA SILENT=1")
+                if self.lang == 'ru':
+                    gcmd.respond_raw("Скрыть выбор цвета, печатать с IFS")
+                else:
+                    gcmd.respond_raw("Hide color selection, print with IFS")
                 for tool_idx, tool_val in enumerate(tools):
                     for slot_info in result:
                         if int(slot_info['ID']) != tool_val:
@@ -760,8 +857,14 @@ class zmod_color:
                         })
                 self.cmd_PRINT_ZCOLOR(gcmd2)
             elif silent == 2:
+                self.gcode.run_script_from_command(f"SAVE_VARIABLE VARIABLE=print_leveling VALUE={leveling}")
+                gcmd.respond_raw(f"// {fname}")
                 gcmd.respond_raw(f"// {leveling_text}")
-                gcmd.respond_raw(f"// IFS OFF")
+                gcmd.respond_raw("// IFS OFF // SAVE_ZMOD_DATA SILENT=2")
+                if self.lang == 'ru':
+                    gcmd.respond_raw("Скрыть выбор цвета, печатать без IFS")
+                else:
+                    gcmd.respond_raw("Hide color selection, print without IFS");
                 if self.display:
                     data = {
                         "fileName": fname,
@@ -840,6 +943,7 @@ class zmod_color:
                         "slotMaterialColor": f"#{slot_info['HEX']}"
                     })
 
+            self.gcode.run_script_from_command(f"SAVE_VARIABLE VARIABLE=print_leveling VALUE={leveling}")
             if self.display:
                 data = {
                     "fileName": fname,
@@ -858,6 +962,7 @@ class zmod_color:
             else:
                 with open(FILE_CONFIG, 'w') as file:
                     json.dump(tools, file, indent=2)
+
                 self.find_t_code(fname)
                 self.gcode.run_script_from_command(f"SDCARD_PRINT_FILE FILENAME=\"{fname}\"")
         else:
@@ -887,17 +992,22 @@ class zmod_color:
             spool_number = mapping[channel]
             current_spool_number = self.get_current_channel()
 
-            if spool_number != current_spool_number:
-                self.gcode.run_script_from_command(f"INSERT_PRUTOK_IFS PRUTOK={spool_number} NEED_STOP=0")
+            if spool_number != current_spool_number or not self.get_extruder_sensor():
+                self.gcode.run_script_from_command(f"INSERT_PRUTOK_IFS PRUTOK={spool_number} NEED_STOP=0 TRASH=0")
             else:
                 gcmd.respond_raw(f"Current Prutok = Prutok = {spool_number}")
             self.gcode.run_script_from_command("END_CHANGE_FILAMENT")
 
         except Exception as e:
             if restore == 1:
-                gcmd.respond_raw(f"!! Ошибка при смене филамента: {str(e)}\nВстаю на паузу")
-                gcmd.respond_raw(f"tgalarm_photo Ошибка при смене филамента: {str(e)}\nВстаю на паузу")
+                if self.lang == 'ru':
+                    msg = f"!! Ошибка при смене филамента: {str(e)}\nВстаю на паузу"
+                else:
+                    msg = f"!! Filament change error: {str(e)}\nPausing print"
+                gcmd.respond_raw(f"{msg}")
+                gcmd.respond_raw(f"tgalarm_photo {msg}")
                 try:
+                    self.gcode.run_script_from_command("IFS_F112")
                     self.gcode.run_script_from_command("IFS_F18")
                 except:
                     pass
@@ -905,7 +1015,12 @@ class zmod_color:
                 pause_resume.send_pause_command()
                 self.gcode.run_script_from_command("PAUSE\nM400\n")
             else:
-                gcmd.respond_raw(f"!! Ошибка при смене филамента: {str(e)}\nПечать отменена")
+                if self.lang == 'ru':
+                    msg = f"!! Ошибка при смене филамента: {str(e)}\nПечать отменена"
+                else:
+                    msg = f"!! Filament change error: {str(e)}\nPrint cancelled"
+                gcmd.respond_raw(f"{msg}")
+                gcmd.respond_raw(f"tgalarm_photo {msg}")
                 raise
 
     def cmd_CHANGE_T_ZCOLOR(self, gcmd):
@@ -952,15 +1067,17 @@ class zmod_color:
                 params=f"T0={tools[0]} T1={tools[1]} T2={tools[2]}               FILENAME=\"{fname}\" LEVELING={leveling} "
 
             gcmd.respond_raw(f"// action:prompt_begin {self._t('prompt_material')}")
+            gcmd.respond_raw(f"// action:prompt_text {fname}")
+
             gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_map_color')}")
-            gcmd.respond_raw(f"// action:prompt_text {self._t('prompt_file', fname)}")
             gcmd.respond_raw(f"// action:prompt_text T{ztool}:")
 
             gcmd.respond_raw("// action:prompt_button_group_start")
             for slot in result:
+                color_name = slot['Color'].replace('_', '/', 1) if slot['Color'].startswith('_') else ''
                 btn_text = (
                     f"{slot['ID']}: "
-                    f"{slot['Material']}"
+                    f"{slot['Material']}{color_name}"
                 )
                 gcmd.respond_raw(
                     f"// action:prompt_button {btn_text}|"
@@ -985,12 +1102,13 @@ class zmod_color:
         zhex = gcmd.get('HEX', '161616').upper()
         ztype = gcmd.get('TYPE', '').upper()
 
-        color_name = self.COLOR_MAPPING.get(zhex.lower(), {}).get(self.language, zhex)
+        color_name = self.COLOR_MAPPING.get(zhex.lower(), zhex)
 
         if ztype not in self.valid_types:
             raise gcmd.error(self._t('error_type', ztype, ', '.join(self.valid_types[:-1])))
 
         gcmd.respond_raw(f"// action:prompt_begin {self._t('select_action')}")
+
         gcmd.respond_raw(f"// action:prompt_text {self._t('spool_info', zslot, ztype, color_name)}")
 
         gcmd.respond_raw("// action:prompt_button_group_start")
@@ -1073,10 +1191,10 @@ class zmod_color:
             gcmd.respond_raw("// action:prompt_button_group_start")
             counter = 0
             total_colors = len(self.COLOR_MAPPING)
-            for hex_code, color_data in self.COLOR_MAPPING.items():
-                #color_name = color_data[self.language]
+            for hex_code, color_name in self.COLOR_MAPPING.items():
+                color_name = color_name.replace('_', '', 1) if color_name.startswith('_') else '_'
                 gcmd.respond_raw(
-                    f"// action:prompt_button _ |"
+                    f"// action:prompt_button {color_name} |"
                     f"CHANGE_ZCOLOR SLOT={zslot} TYPE={ztype} HEX={hex_code}|primary|{hex_code}"
                 )
                 counter += 1
@@ -1088,7 +1206,7 @@ class zmod_color:
             gcmd.respond_raw("// action:prompt_show")
 
         if zhex:
-            color_name = self.COLOR_MAPPING.get(zhex.lower(), {}).get(self.language, zhex)
+            color_name = self.COLOR_MAPPING.get(zhex.lower(), zhex)
             gcmd.respond_raw(f"// action:prompt_begin {self._t('select_type')}")
             gcmd.respond_raw(f"// action:prompt_text {self._t('spool_info', zslot, '', color_name)}")
             gcmd.respond_raw("// action:prompt_button_group_start")
